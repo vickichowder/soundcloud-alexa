@@ -10,6 +10,3 @@ HelpIntent what
 
 PauseIntent pause
 PauseIntent stop
-
-NextIntent next
-NextIntent skip

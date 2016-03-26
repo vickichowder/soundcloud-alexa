@@ -1,13 +1,12 @@
 'use strict';
-
-var APP_ID = "amzn1.echo-sdk-ams.app.4b678114-e0a9-4c13-a82f-3d381641773b";
+require('dotenv').load();
 
 var http       = require('http'),
     AlexaSkill = require('./AlexaSkill'),
-    APP_ID     = 'amzn1.echo-sdk-ams.app.4b678114-e0a9-4c13-a82f-3d381641773b',
+    APP_ID     = process.env.APP_ID,
     SC = require('./soundcloud_sdk.js'),
-    SC_USER_ID    = '161649318',
-    SC_CLIENT_ID  = '05aff6aeebc300b481835cf924c1865d';
+    SC_USER_ID    = process.env.SOUNDCLOUD_USER,
+    SC_CLIENT_ID  = process.env.SOUNDCLOUD_CLIENT;
 
 var PLAYLIST_MAP = {
     OdeszaNoSleep: "206787028",
@@ -23,14 +22,6 @@ SC.initialize({
     client_id: SC_CLIENT_ID,
 });
 
-var userUrl = function() {
-  return 'https://api.soundcloud.com/users/' + SOUNDCLOUD_USER_ID + '/playlists/?client_id=' + SOUNDCLOUD_CLIENT_ID;
-};
-
-var playlistUrl = function(playlistId) {
-  return 'https://api.soundcloud.com/playlists/' + playlistId + '/?client_id=' + SOUNDCLOUD_CLIENT_ID;
-};
-
 var SoundCloudPlay = function(){
   AlexaSkill.call(this, APP_ID);
 };
@@ -40,13 +31,21 @@ var player;
 SoundCloudPlay.prototype = Object.create(AlexaSkill.prototype);
 SoundCloudPlay.prototype.constructor = SoundCloudPlay;
 
+SoundCloudPlay.prototype.eventHandlers.onSessionStarted = function(sessionStartedRequest, session){
+  // What happens when the session starts? Optional
+  console.log("onSessionStarted requestId: " + sessionStartedRequest.requestId
+      + ", sessionId: " + session.sessionId);
+};
+
 SoundCloudPlay.prototype.eventHandlers.onLaunch = function(launchRequest, session, response){
   var output = 'Hello from Sound Cloud. ' +
     'What playlist do you want to hear?';
 
   var reprompt = 'Which artist do you want to hear?';
-
   response.ask(output, reprompt);
+
+  console.log("onLaunch requestId: " + launchRequest.requestId
+      + ", sessionId: " + session.sessionId);
 };
 
 // var handleListPlaylistRequest = function(intent, session, response){
@@ -78,7 +77,6 @@ var handlePauseRequest = function(intent, session, response){
   });
 };
 
-
 SoundCloudPlay.prototype.intentHandlers = {
   // WIP
   // ListPlaylistIntent: function(intent, session, response){
@@ -94,14 +92,13 @@ SoundCloudPlay.prototype.intentHandlers = {
     handlePauseRequest(intent, session, response);
   },
 
-  // Current soundcloud http api doesn't have next() method
-  // Only the widget api has that
-  // NextIntent: function(intent, session, response){
-  //   handlePauseRequest(intent, session, response);
-  // },
-
   HelpIntent: function(intent, session, response){
     var speechOutput = 'What playlist do you want to hear?';
     response.ask(speechOutput);
   }
+};
+
+exports.handler = function(event, context) {
+    var skill = new SoundCloudPlay();
+    skill.execute(event, context);
 };

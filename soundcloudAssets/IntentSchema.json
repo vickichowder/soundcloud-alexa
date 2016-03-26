@@ -8,7 +8,10 @@
           "type": "LIST_OF_PLAYLISTS"
         }
       ]
-    }
+    },
+    {
+      "intent": "PauseIntent"
+    },
     {
       "intent": "HelpIntent"
     }
