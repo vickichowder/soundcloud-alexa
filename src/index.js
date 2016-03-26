@@ -1,10 +1,9 @@
-'use strict';
 require('dotenv').load();
 
 var http       = require('http'),
     AlexaSkill = require('./AlexaSkill'),
     APP_ID     = process.env.APP_ID,
-    SC = require('./soundcloud_sdk.js'),
+    SC = require('soundcloud'),
     SC_USER_ID    = process.env.SOUNDCLOUD_USER,
     SC_CLIENT_ID  = process.env.SOUNDCLOUD_CLIENT;
 

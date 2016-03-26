@@ -1,0 +1,16 @@
+{
+  "name": "soundcloud-alexa",
+  "version": "1.0.0",
+  "description": "Play soundcloud playlists through alexa",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Vicki Chow",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "mocha": "^2.4.5",
+    "soundcloud": "^3.1.0"
+  }
+}
