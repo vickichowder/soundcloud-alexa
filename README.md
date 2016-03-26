@@ -1,29 +1,55 @@
-# Node.js Alexa Skills Kit Samples
+# Play Your SoundCloud Playlists With Alexa
+I used Amazon's Savvy Consumer as a template for this, along with [Soundcloud's HTTP API](https://developers.soundcloud.com/docs/api/reference) and [Soundcloud's js SDK](https://developers.soundcloud.com/docs/api/sdks#javascript).
 
-##Alexa Skills Kit Documentation
-The documentation for the Alexa Skills Kit is available on the [Amazon Apps and Services Developer Portal](https://developer.amazon.com/appsandservices/solutions/alexa/alexa-skills-kit/).
+Edit `index.js` to add your own playlist ids
 
-## Contents
-The included samples represent how to use nodejs AWS Lambda functions as Alexa Skills.
-The following samples are included (ordered by complexity, see the Using Alexa Skills Kit Samples
-link below for more details):
+*The following are steps from the AWS Savvy Consumer readme, edited to make it relevant to the soundcloud skill:*
 
-- SpaceGeek : a simple skill that responds to the user with a space fact.
-- ReindeerGames: a simple skill that plays trivia quiz questions
-- MinecraftHelper : a simple skill that responds to the user's recipe queries with formulas.
-- WiseGuy : a skill that tells knock knock jokes.
-- HistoryBuff : a skill that gives historical information that happened on a user provided day.
-- Savvy Consumer : a skill that looks up a category on Amazon and returns the best selling products.
-- TidePooler : a skill that looks up tide information for various cities.
-- ScoreKeeper : a skill that can keep score of a game.
+***
 
-## Usage
-Navigate to the README.md in each sub directory in the samples folder and follow the instructions for getting the sample up and running.
+A simple [AWS Lambda](http://aws.amazon.com/lambda) function that demonstrates how to write a skill for the Amazon Echo using the Alexa SDK.
 
-## Resources
-Here are a few direct links to our documentation:
+## Setup
+To run this example skill you need to do two things. The first is to deploy the example code in lambda, and the second is to configure the Alexa skill to use Lambda.
 
-- [Using the Alexa Skills Kit Samples (Node.js)](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/using-the-alexa-skills-kit-samples)
-- [Getting Started](https://developer.amazon.com/appsandservices/solutions/alexa/alexa-skills-kit/getting-started-guide)
-- [Invocation Name Guidelines](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/choosing-the-invocation-name-for-an-alexa-skill)
-- [Developing an Alexa Skill as an AWS Lambda Function](https://developer.amazon.com/appsandservices/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function)
+### AWS Lambda Setup
+1. Go to the AWS Console and click on the Lambda link. Note: ensure you are in us-east or you won't be able to use Alexa with Lambda.
+2. Click on the Create a Lambda Function or Get Started Now button.
+3. Skip the blueprint
+4. Name the Lambda Function "Soundcloud-Skill".
+5. Select the runtime as Node.js
+6. Go to the the src directory, select all files and then create a zip file, make sure the zip file does not contain the src directory itself, otherwise Lambda function will not work.
+7. Select Code entry type as "Upload a .ZIP file" and then upload the .zip file to the Lambda
+8. Keep the Handler as index.handler (this refers to the main js file in the zip).
+9. Create a basic execution role and click create.
+10. Leave the Advanced settings as the defaults.
+11. Click "Next" and review the settings then click "Create Function"
+12. Click the "Event Sources" tab and select "Add event source"
+13. Set the Event Source type as Alexa Skills kit and Enable it now. Click Submit.
+14. Copy the ARN from the top right to be used later in the Alexa Skill Setup
+
+### Alexa Skill Setup
+1. Go to the [Alexa Console](https://developer.amazon.com/edw/home.html) and click Add a New Skill.
+2. Set "Soundcloud" as the skill name and "sound cloud" as the invocation name, this is what is used to activate your skill. For example you would say: "Alexa, Ask Savvy Consumer for top books."
+3. Select the Lambda ARN for the skill Endpoint and paste the ARN copied from above. Click Next.
+4. Copy the custom slot types from the customSlotTypes folder. Each file in the folder represents a new custom slot type. The name of the file is the name of the custom slot type, and the values in the file are the values for the custom slot.
+5. Copy the Intent Schema from the included IntentSchema.json.
+6. Copy the Sample Utterances from the included SampleUtterances.txt. Click Next.
+7. [optional] go back to the skill Information tab and copy the appId. Paste the appId into the index.js file for the variable APP_ID,
+   then update the lambda source zip file with this change and upload to lambda again, this step makes sure the lambda function only serves request from authorized source.
+8. You are now able to start testing your sample skill! You should be able to go to the [Echo webpage](http://echo.amazon.com/#skills) and see your skill enabled.
+9. In order to test it, try to say some of the Sample Utterances from the Examples section below.
+10. Your skill is now saved and once you are finished testing you can continue to publish your skill.
+
+### Soundcloud Setup
+In order to get the soundcloud skill working, you will need to enter your access and secret key for AWS into index.js:
+
+1. Go to the [AWS console](https://console.aws.amazon.com/)
+2. Click on your name/login in the top bar and select security credentials
+3. Copy the access key and secret key.
+4. Paste them into the variables in index.js.
+5. Zip the src directory again, and upload it to Lambda.
+
+## Examples
+    User:  "Alexa, ask Sound Cloud to play Odesza"
+    Alexa: "Playing Odesza from Sound Cloud (playlist begins)"

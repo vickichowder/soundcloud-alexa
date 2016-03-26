@@ -1,0 +1,16 @@
+{
+  "intents": [
+    {
+      "intent": "PlayPlaylistIntent",
+      "slots": [
+        {
+          "name": "Playlist",
+          "type": "LIST_OF_PLAYLISTS"
+        }
+      ]
+    }
+    {
+      "intent": "HelpIntent"
+    }
+  ]
+}

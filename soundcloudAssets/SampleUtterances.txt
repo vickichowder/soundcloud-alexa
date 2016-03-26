@@ -1,0 +1,15 @@
+PlayPlaylistIntent play {Playlist}
+PlayPlaylistIntent start {Playlist}
+
+ListPlaylistIntent list playlists
+ListPlaylistIntent what can i play
+ListPlaylistIntent what do i have
+
+HelpIntent say that again
+HelpIntent what
+
+PauseIntent pause
+PauseIntent stop
+
+NextIntent next
+NextIntent skip
