@@ -4,29 +4,30 @@ dotenv.load();
 var http = require('http');
 var request = require('request');
 var util = require('util');
-var SC = require('soundcloud');
+var SC = require('node-soundcloud');
 console.log(1);
 var AlexaSkill = require('./AlexaSkill');
 console.log(2);
 var APP_ID = process.env.APP_ID;
+var streamUrl = "";
 console.log(3);
 
 console.log(4);
 var SC_USER_ID = process.env.SOUNDCLOUD_USER;
 var SC_CLIENT_ID = process.env.SOUNDCLOUD_CLIENT;
 var SC_USERNAME = process.env.SOUNDCLOUD_USERNAME;
-var resolve_url = 'http://api.soundcloud.com/resolve?';
+var resolve_url = 'https://api.soundcloud.com/resolve?url=';
 
 var PLAYLIST_MAP = {
     odesza: "odesza-no-sleep",
     galimatias: "2619526011",
-    songs: "songs"
+    songs: "songs",
     ChetFaker: "15690151",
     Flume: "165797011",
     TaKu: "11055981"
 };
 
-SC.initialize({
+SC.init({
     client_id: SC_CLIENT_ID
 });
 
@@ -62,6 +63,7 @@ SoundCloudPlay.prototype.eventHandlers.onLaunch = function(launchRequest, sessio
 // };
 
 function handlePlayRequest(intent, session, response){
+  streamUrl = "";
   var playlist = intent.slots.Playlist.value.replace(/\.\s*/g, '')
   var playlistName = PLAYLIST_MAP[playlist]
 
@@ -72,18 +74,20 @@ function handlePlayRequest(intent, session, response){
       type: AlexaSkill.speechOutputType.PLAIN_TEXT
   };
   response.tell(speechOutput);
-
+  $scope.tracks = [];
   $scope.streamTrack = function( track_url ){
        var formatted_url = 'http://soundcloud.com' + track_url;
 
        SC.get( '/resolve', { url: formatted_url }, function( track ){
            SC.stream( '/tracks/' + track.id, function( sm_object ){
-               $scope.tracks.push( sm_object );
-               console.log( sm_object.url );
-              //  return( sm_object.url );
+              $scope.tracks.push( sm_object );
+              console.log( sm_object.url );
+              streamUrl = sm_object.url;
            });
        });
    }
+
+   return streamUrl;
 };
 
 
@@ -112,7 +116,8 @@ SoundCloudPlay.prototype.intentHandlers = {
 };
 
 exports.handler = function(event, context) {
-    var soundCloudPlay = new SoundCloudPlay()
-    soundCloudPlay.execute(event, context)
+    var soundCloudPlay = new SoundCloudPlay();
+    streamUrl = soundCloudPlay.execute(event, context);
+
 };
 console.log('last line');
